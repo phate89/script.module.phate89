@@ -10,9 +10,20 @@ def getParams():
     if not sys.argv[2]:
         return {}
     return dict(urlparse.parse_qsl(sys.argv[2][1:]))
- 
+
+def encoded_dict(in_dict):
+    out_dict = {}
+    for k, v in in_dict.iteritems():
+        if isinstance(v, unicode):
+            v = v.encode('utf8')
+        elif isinstance(v, str):
+            # Must be encoded in UTF-8
+            v.decode('utf8')
+        out_dict[k] = v
+    return out_dict
+
 def parameters (p):
-    return sys.argv[0] + '?' + urllib.urlencode(p)
+    return sys.argv[0] + '?' + urllib.urlencode(encoded_dict(p))
 
 def normalizeString(str):
     return unicodedata.normalize(
