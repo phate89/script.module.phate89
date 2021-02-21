@@ -1,16 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-import json
 import os
 import shutil
 import zipfile
+from json.decoder import JSONDecodeError
 import requests
 from bs4 import BeautifulSoup
-from . import staticutils
-try:
-    from json.decoder import JSONDecodeError
-except ImportError:
-    JSONDecodeError = ValueError
 
 
 class RUtils(object):
@@ -38,16 +33,17 @@ class RUtils(object):
         if addDefault:
             params.update(self.DEFPARAMS)
         if post is not None:
-            r = self.SESSION.post(url, params=params, data=post, stream=stream, **kwargs)
+            r = self.SESSION.post(url, params=params, data=post,
+                                  stream=stream, **kwargs)
         else:
             r = self.SESSION.get(url, params=params, stream=stream, **kwargs)
         self.log("Opening url %s" % r.url, 2)
         if r.ok:
             return r
         if r.status_code < 500:
-            self.log("Error opening url. Client error")
+            self.log("Error opening url. Client error " + str(r.status_code))
         else:
-            self.log("Error opening url. Server error")
+            self.log("Error opening url. Server error " + str(r.status_code))
         return False
 
     def newSession(self):
@@ -77,7 +73,7 @@ class RUtils(object):
     def getText(self, url, params=None, post=None, **kwargs):
         r = self.createRequest(url, params, post, **kwargs)
         if r:
-            return staticutils.py2_encode(r.text)
+            return r.text
         return False
 
     def getFileExtracted(self, url, params=None, post=None, dataPath='', index=0):
@@ -127,9 +123,9 @@ class RUtils(object):
 
             if binData:
                 try:
-                    fp = open(outName, 'wb')
-                    fp.write(binData)
-                    fp.close()
+                    with open(outName, 'wb') as fp:
+                        fp.write(binData)
+                        fp.close()
                 except EnvironmentError:
                     self.log("Error writing text subtitle file")
                     return False
@@ -139,7 +135,7 @@ class RUtils(object):
                 return False
         elif ext == 'rar':
             try:
-                from kodi_six import xbmc
+                import xbmc
             except ImportError:
                 self.log('rar extraction not supported', 1)
                 return False
@@ -147,7 +143,7 @@ class RUtils(object):
             if os.path.isdir(TEMPFOLDER):
                 shutil.rmtree(TEMPFOLDER)
             os.makedirs(TEMPFOLDER)
-            xbmc.executebuiltin('XBMC.Extract(%s,%s)' % (TEMPFILE, TEMPFOLDER), True)
+            xbmc.executebuiltin('Extract(%s,%s)' % (TEMPFILE, TEMPFOLDER), True)
             exts = ['.srt', '.sub', '.txt', '.smi', '.ssa', '.ass']
             subs = [os.path.join(root, name)
                     for root, dirs, files in os.walk(TEMPFOLDER)
