@@ -43,7 +43,7 @@ def log(msg, level=2):
     if level > 1:
         xbmc.log(msg=message, level=xbmc.LOGDEBUG)
     else:
-        xbmc.log(msg=message, level=xbmc.LOGNOTICE)
+        xbmc.log(msg=message, level=xbmc.LOGINFO)
         if level == 0:
             notify(msg)
 
@@ -129,6 +129,7 @@ def setResolvedUrl(url="", solved=True, subs=None, headers=None, ins=None, insda
         item.setSubtitles(subs)
     if ins:
         item.setProperty('inputstreamaddon', ins)
+        item.setProperty('inputstream', ins)
         if insdata:
             for key, value in list(insdata.items()):
                 item.setProperty(ins + '.' + key, value)

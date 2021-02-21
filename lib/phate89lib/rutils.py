@@ -38,16 +38,17 @@ class RUtils(object):
         if addDefault:
             params.update(self.DEFPARAMS)
         if post is not None:
-            r = self.SESSION.post(url, params=params, data=post, stream=stream, **kwargs)
+            r = self.SESSION.post(url, params=params, data=post,
+                                  stream=stream, **kwargs)
         else:
             r = self.SESSION.get(url, params=params, stream=stream, **kwargs)
         self.log("Opening url %s" % r.url, 2)
         if r.ok:
             return r
         if r.status_code < 500:
-            self.log("Error opening url. Client error")
+            self.log("Error opening url. Client error " + str(r.status_code))
         else:
-            self.log("Error opening url. Server error")
+            self.log("Error opening url. Server error " + str(r.status_code))
         return False
 
     def newSession(self):
@@ -77,7 +78,7 @@ class RUtils(object):
     def getText(self, url, params=None, post=None, **kwargs):
         r = self.createRequest(url, params, post, **kwargs)
         if r:
-            return staticutils.py2_encode(r.text)
+            return r.text
         return False
 
     def getFileExtracted(self, url, params=None, post=None, dataPath='', index=0):
