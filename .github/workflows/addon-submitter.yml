@@ -23,12 +23,14 @@ jobs:
       env: # Make sure you create the below secrets (GH_TOKEN and EMAIL)
         GH_USERNAME: ${{ github.actor }}
         GH_TOKEN: ${{secrets.GH_TOKEN}}
+        GITHUB_TOKEN: ${{secrets.GH_TOKEN}}
         EMAIL: ${{secrets.EMAIL}}
     - name: Create Github Release
       id: create_release
       uses: actions/create-release@v1.0.0
       env:
         GH_TOKEN: ${{ secrets.GH_TOKEN }}
+        GITHUB_TOKEN: ${{secrets.GH_TOKEN}}
       with:
         tag_name: ${{ github.ref }}
         release_name: Release ${{ github.ref }}
@@ -39,6 +41,7 @@ jobs:
       uses: actions/upload-release-asset@v1.0.1
       env:
         GH_TOKEN: ${{ secrets.GH_TOKEN }}
+        GITHUB_TOKEN: ${{secrets.GH_TOKEN}}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
         asset_path: ${{ steps.kodi-addon-submitter.outputs.addon-zip }}
