@@ -122,7 +122,7 @@ def addListItem(label="", params=None, label2=None, thumb=None, fanart=None, pos
     return xbmcplugin.addDirectoryItem(handle=HANDLE, url=url, listitem=item, isFolder=isFolder)
 
 
-def setResolvedUrl(url="", solved=True, subs=None, headers=None, ins=None, insdata=None):
+def setResolvedUrl(url="", solved=True, subs=None, headers=None, ins=None, insdata=None, exit=True):
     headerUrl = ""
     if headers:
         headerUrl = urlencode(headers)
@@ -136,7 +136,8 @@ def setResolvedUrl(url="", solved=True, subs=None, headers=None, ins=None, insda
             for key, value in list(insdata.items()):
                 item.setProperty(ins + '.' + key, value)
     xbmcplugin.setResolvedUrl(HANDLE, solved, item)
-    sys.exit()
+    if exit:
+        sys.exit()
 
 
 def append_subtitle(sUrl, subtitlename, sync=False, provider=None):
