@@ -91,12 +91,12 @@ def showOkDialog(heading, line):
 
 
 def addListItem(label="", params=None, label2=None, thumb=None, fanart=None, poster=None, arts=None,
-                videoInfo=None, properties=None, isFolder=True):
+                videoInfo=None, properties=None, isFolder=True, path=None, subs=None):
     if arts is None:
         arts = {}
     if properties is None:
         properties = {}
-    item = xbmcgui.ListItem(label, label2)
+    item = xbmcgui.ListItem(label, label2, path)
     if thumb:
         arts['thumb'] = thumb
     if fanart:
@@ -105,6 +105,8 @@ def addListItem(label="", params=None, label2=None, thumb=None, fanart=None, pos
         arts['poster'] = poster
     item.setArt(arts)
     item.setInfo('video', videoInfo)
+    if subs is not None:
+        item.setSubtitles(subs)
     if not isFolder:
         properties['IsPlayable'] = 'true'
     if isinstance(params, dict):
