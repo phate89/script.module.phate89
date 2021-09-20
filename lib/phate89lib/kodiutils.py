@@ -90,7 +90,7 @@ def showOkDialog(heading, line):
     xbmcgui.Dialog().ok(heading, line)
 
 
-def addListItem(label="", params=None, label2=None, thumb=None, fanart=None, poster=None, arts=None,
+def createListItem(label="", params=None, label2=None, thumb=None, fanart=None, poster=None, arts=None,
                 videoInfo=None, properties=None, isFolder=True, path=None, subs=None):
     if arts is None:
         arts = {}
@@ -109,20 +109,29 @@ def addListItem(label="", params=None, label2=None, thumb=None, fanart=None, pos
         item.setSubtitles(subs)
     if not isFolder:
         properties['IsPlayable'] = 'true'
+    for key, value in list(properties.items()):
+        item.setProperty(key, value)
+    return item
+
+
+def addListItem(label="", params=None, label2=None, thumb=None, fanart=None, poster=None, arts=None,
+                videoInfo=None, properties=None, isFolder=True, path=None, subs=None):
     if isinstance(params, dict):
         url = staticutils.parameters(params)
     else:
         url = params
-    for key, value in list(properties.items()):
-        item.setProperty(key, value)
+    item = createListItem(label=label, params=params, label2=label2,
+                          thumb=thumb, fanart=fanart, poster=poster,
+                          arts=arts, videoInfo=videoInfo, properties=properties,
+                          subs=subs, isFolder=isFolder)
     return xbmcplugin.addDirectoryItem(handle=HANDLE, url=url, listitem=item, isFolder=isFolder)
 
 
-def setResolvedUrl(url="", solved=True, subs=None, headers=None, ins=None, insdata=None, exit=True):
+def setResolvedUrl(url="", solved=True, subs=None, headers=None, ins=None, insdata=None, item=None, exit=True):
     headerUrl = ""
     if headers:
         headerUrl = urlencode(headers)
-    item = xbmcgui.ListItem(path=url + "|" + headerUrl)
+    item = xbmcgui.ListItem(path=url + "|" + headerUrl) if item is None else item
     if subs is not None:
         item.setSubtitles(subs)
     if ins:
