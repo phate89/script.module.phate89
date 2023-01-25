@@ -8,6 +8,7 @@ import xbmc
 import xbmcaddon
 import xbmcplugin
 import xbmcgui
+import xbmcvfs
 from . import staticutils
 
 ADDON = xbmcaddon.Addon()
@@ -16,8 +17,8 @@ NAME = ADDON.getAddonInfo('name')
 VERSION = ADDON.getAddonInfo('version')
 PATH = ADDON.getAddonInfo('path')
 DATA_PATH = ADDON.getAddonInfo('profile')
-PATH_T = xbmc.translatePath(PATH)
-DATA_PATH_T = xbmc.translatePath(DATA_PATH)
+PATH_T = xbmcvfs.translatePath(PATH)
+DATA_PATH_T = xbmcvfs.translatePath(DATA_PATH)
 IMAGE_PATH_T = os.path.join(PATH_T, 'resources', 'media', "")
 LANGUAGE = ADDON.getLocalizedString
 KODILANGUAGE = xbmc.getLocalizedString
